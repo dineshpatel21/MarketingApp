@@ -1,88 +1,138 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     View,
     Text,
+    StyleSheet,
+    Image,
     TextInput,
     TouchableOpacity,
-    StyleSheet,
 } from "react-native";
+import { colors } from "../theme/colors";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const LoginScreen = (props: any) => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const onLogin = () => {
         props.navigation.replace("Dashboard");
-    }
+    };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.card}>
-                <Text style={styles.title}>Login</Text>
+        <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.container}>
 
-                <TextInput
-                    placeholder="Id"
-                    style={styles.input}
+                {/* LOGO */}
+                <Image
+                    source={require("../assets/logo.png")}
+                    style={styles.logo}
+                    resizeMode="contain"
                 />
 
-                <TextInput
-                    placeholder="Password"
-                    secureTextEntry
-                    style={styles.input}
-                />
+                {/* CARD */}
+                <View style={styles.card}>
+                    <Text style={styles.heading}>Login</Text>
 
-                <TouchableOpacity style={styles.button} onPress={onLogin} >
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
+                    {/* EMAIL */}
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput
+                        placeholder="Enter email"
+                        placeholderTextColor="#9a9a9a"
+                        value={email}
+                        onChangeText={setEmail}
+                        style={styles.input}
+                    />
+
+                    {/* PASSWORD */}
+                    <Text style={styles.label}>Password</Text>
+                    <TextInput
+                        placeholder="Enter password"
+                        placeholderTextColor="#9a9a9a"
+                        secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
+                        style={styles.input}
+                    />
+
+                    {/* BUTTON */}
+                    <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
+                        <Text style={styles.loginButtonText}>Login</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
-}
+};
+
+export default LoginScreen;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#FFFFFF",
-        justifyContent: "center",
+        backgroundColor: colors.beige,
         alignItems: "center",
-        paddingHorizontal: 24,
+        paddingTop: 20,
     },
+
+    logo: {
+        width: 170,
+        height: 170,
+        marginBottom: 5,
+        marginTop: 10,
+    },
+
     card: {
-        width: "100%",
-        maxWidth: 300,
-        padding: 24,
+        width: "88%",
+        backgroundColor: colors.white,
+        padding: 25,
         borderRadius: 20,
-        borderWidth: 1,
-        borderColor: "#CCCCCC",
+        borderWidth: 1.5,
+        borderColor: colors.primary,
+        elevation: 6,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
     },
-    title: {
-        fontSize: 24,
+
+    heading: {
+        fontSize: 26,
         fontWeight: "700",
+        color: colors.primaryDark,
         textAlign: "center",
-        marginBottom: 30,
+        marginBottom: 25,
     },
+
+    label: {
+        fontSize: 16,
+        color: colors.primaryDark,
+        marginBottom: 6,
+        fontWeight: "600",
+    },
+
     input: {
         width: "100%",
-        borderWidth: 1,
-        borderColor: "#999",
+        backgroundColor: "#fff",
+        borderWidth: 1.5,
+        borderColor: colors.primary,
         borderRadius: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
+        padding: 12,
         fontSize: 16,
-        marginBottom: 16,
+        marginBottom: 22,
     },
-    button: {
-        // backgroundColor: "#000",
-        borderWidth: 1,
-        borderColor: "#000",
-        backgroundColor: "#FFFFFF",
+
+    loginButton: {
+        backgroundColor: colors.primary,
         paddingVertical: 14,
-        borderRadius: 20,
+        borderRadius: 30,
+        marginTop: 10,
+        elevation: 4,
     },
-    buttonText: {
-        color: "#000",
+
+    loginButtonText: {
+        color: colors.white,
+        fontSize: 18,
         textAlign: "center",
-        fontWeight: "600",
-        fontSize: 16,
+        fontWeight: "700",
     },
 });
-
-export default LoginScreen;

@@ -5,13 +5,17 @@ import {
     Text,
     TouchableOpacity,
 } from "react-native";
+import { colors } from "../theme/colors";
 
-export default function CustomDrawer(props: any) {
+
+const CustomDrawer = (props: any) => {
     const { DRAWER_WIDTH, translateX, closeDrawer } = props
 
     const onLogout = () => {
         closeDrawer();
     }
+
+   
 
     return (
         <Animated.View
@@ -22,12 +26,12 @@ export default function CustomDrawer(props: any) {
                 bottom: 0,
                 width: DRAWER_WIDTH,
                 transform: [{ translateX }],
-                backgroundColor: "white",
                 borderTopRightRadius: 20,
                 borderBottomRightRadius: 20,
                 paddingHorizontal: 20,
                 paddingTop: 50,
                 elevation: 10,
+                backgroundColor: colors.beige,
             }}
         >
             {/* Profile */}
@@ -54,14 +58,6 @@ export default function CustomDrawer(props: any) {
                 />
             </View>
 
-            {/* Menu List */}
-            <View style={{ gap: 25, paddingLeft: 10 }}>
-                <TouchableOpacity><Text style={{ fontSize: 18 }}>Dashboard</Text></TouchableOpacity>
-                <TouchableOpacity><Text style={{ fontSize: 18 }}>Orders</Text></TouchableOpacity>
-                <TouchableOpacity><Text style={{ fontSize: 18 }}>Sales</Text></TouchableOpacity>
-                <TouchableOpacity><Text style={{ fontSize: 18 }}>Profile</Text></TouchableOpacity>
-            </View>
-
             {/* Logout */}
             <View
                 style={{
@@ -74,15 +70,17 @@ export default function CustomDrawer(props: any) {
                 <TouchableOpacity
                     onPress={onLogout}
                     style={{
-                        backgroundColor: "#eee",
+                        backgroundColor: colors.primary,
                         paddingVertical: 12,
                         borderRadius: 10,
                         alignItems: "center",
                     }}
                 >
-                    <Text style={{ fontSize: 18 }}>Logout</Text>
+                    <Text style={{ fontSize: 18, color: "#fff" }}>Logout</Text>
                 </TouchableOpacity>
             </View>
         </Animated.View>
     );
 }
+
+export default CustomDrawer;

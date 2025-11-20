@@ -86,13 +86,10 @@ const Navigation = () => {
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
-
-
-
-
+            
             <Stack.Navigator screenOptions={{}}>
                 <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="AddProduct" component={AddProduct} options={{ headerShown: false }}/>
+                <Stack.Screen name="AddProduct" component={AddProduct} options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Add Product' }} />
                 <Stack.Screen name="Dashboard" options={{ headerShown: false }}>
                     {props => <Dashboard {...props} drawerVisible={drawerVisible} translateX={translateX} openDrawer={openDrawer} />}
                 </Stack.Screen>

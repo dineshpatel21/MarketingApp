@@ -4,105 +4,89 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
-    ScrollView,
-    Image,
     FlatList,
 } from "react-native";
 import Header from "../components/Header";
+import RecentSales from "../components/RecentSales";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "../theme/colors";
 
-export default function Dashboard(props: any) {
+
+const Dashboard = (props: any) => {
     const { openDrawer } = props;
-    const recentSales = [
-        {
-            id: "1",
-            name: "Apples",
-            address: "Shiv Nagar Ring Road…",
-            weight: "15 Kg",
-        },
-        {
-            id: "2",
-            name: "Bananas",
-            address: "MG Road Near Market…",
-            weight: "20 Kg",
-        },
-        {
-            id: "3",
-            name: "Grapes",
-            address: "Ring Road Sector 4…",
-            weight: "12 Kg",
-        },
-    ];
 
+    const recentSales = [
+        { id: "1", name: "Apples", address: "Shiv Nagar Ring Road…", weight: "15 Kg" },
+        { id: "2", name: "Bananas", address: "MG Road Near Market…", weight: "20 Kg" },
+        { id: "3", name: "Grapes", address: "Ring Road Sector 4…", weight: "12 Kg" },
+        { id: "4", name: "Apples", address: "Shiv Nagar Ring Road…", weight: "15 Kg" },
+    ];
 
     const onAddProduct = () => {
         props.navigation.navigate("AddProduct");
-    }
+    };
+
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.container}>
 
-            {/* Header */}
-            <Header openDrawer={openDrawer} />
-            {/* TOP GRID CARDS */}
-            <View style={styles.grid}>
-                <View style={styles.card}>
-                    <Text style={styles.cardTitle}>Check In</Text>
-                    <Text style={styles.cardValue}>10:30 AM</Text>
-                </View>
+                <Header openDrawer={openDrawer} ScreenName={"Dashboard"} />
 
-                <View style={styles.card}>
-                    <Text style={styles.cardTitle}>Check Out</Text>
-                    <Text style={styles.cardValue}>6:00 PM</Text>
-                </View>
-
-                <View style={styles.card}>
-                    <Text style={styles.cardTitle}>Total Orders</Text>
-                    <Text style={styles.cardValue}>30</Text>
-                    <Text style={styles.note}>21 Sep</Text>
-                </View>
-
-                <View style={styles.card}>
-                    <Text style={styles.cardTitle}>Sales</Text>
-                    <Text style={styles.cardValue}>₹ 10,000</Text>
-                </View>
-            </View>
-
-            <Text style={styles.sectionTitle}>Recent Sales</Text>
-
-            <FlatList
-                data={recentSales}
-                
-                keyExtractor={(item: any) => item.id}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item }: any) => (
-                    <View style={styles.saleCard}>
-                        <View style={styles.productImage} />
-                        <View style={styles.saleDetails}>
-                            <Text style={styles.productName}>{item.name}</Text>
-                            <Text style={styles.productAddress}>{item.address}</Text>
-                            <Text style={styles.productWeight}>{item.weight}</Text>
-                        </View>
+                {/* TOP CARDS */}
+                <View style={styles.grid}>
+                    <View style={styles.card}>
+                        <Text style={styles.cardTitle}>Check In</Text>
+                        <Text style={styles.cardValue}>10:30 AM</Text>
                     </View>
-                )}
-            />
+
+                    <View style={styles.card}>
+                        <Text style={styles.cardTitle}>Check Out</Text>
+                        <Text style={styles.cardValue}>6:00 PM</Text>
+                    </View>
+
+                    <View style={styles.card}>
+                        <Text style={styles.cardTitle}>Total Orders</Text>
+                        <Text style={styles.cardValue}>30</Text>
+                        <Text style={styles.note}>21 Sep</Text>
+                    </View>
+
+                    <View style={styles.card}>
+                        <Text style={styles.cardTitle}>Sales</Text>
+                        <Text style={styles.cardValue}>₹ 10,000</Text>
+                    </View>
+                </View>
+
+                 <View style={{ backgroundColor: colors.beige, marginVertical: 10}}>
+                            <Text style={styles.sectionTitle}>Recent Sales</Text>
+                        </View>
+
+                {/* RECENT SALES */}
+                <FlatList
+                    data={recentSales}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => <RecentSales item={item} />}
+                    showsVerticalScrollIndicator={false}
+                    // contentContainerStyle={{ paddingBottom: 40 }}
+                />
 
 
+                {/* ADD PRODUCT BUTTON */}
+                <TouchableOpacity style={styles.addButton} onPress={onAddProduct}>
+                    <Text style={styles.addButtonText}>+</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={styles.addButton} onPress={onAddProduct}>
-                <Text style={styles.addButtonText}>+ Add Order</Text>
-            </TouchableOpacity>
-
-        </View>
+            </View>
+        </SafeAreaView>
     );
 }
-
+export default Dashboard;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: "#FFF",
+        backgroundColor: colors.beige,
     },
 
-    // GRID CARDS
     grid: {
         flexDirection: "row",
         flexWrap: "wrap",
@@ -112,89 +96,56 @@ const styles = StyleSheet.create({
     card: {
         width: "48%",
         backgroundColor: "#FFF",
-        borderRadius: 12,
+        borderRadius: 14,
         padding: 16,
-        borderWidth: 1,
-        borderColor: "#DDD",
+        borderWidth: 1.5,
+        borderColor: colors.cardBorder,
         marginBottom: 16,
+        elevation: 2,
     },
 
     cardTitle: {
         fontSize: 14,
-        color: "#333",
-        marginBottom: 6,
+        color: colors.textLight,
+        marginBottom: 4,
     },
 
     cardValue: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: "700",
+        color: colors.textDark,
     },
 
     note: {
         marginTop: 4,
-        color: "#666",
+        color: colors.textLight,
         fontSize: 12,
     },
 
-    // SALES LIST
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: "700",
         marginBottom: 12,
+        color: colors.primary,
     },
 
-    saleCard: {
-        flexDirection: "row",
-        borderWidth: 1,
-        borderColor: "#DDD",
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 12,
-    },
-
-    productImage: {
-        width: 60,
-        height: 60,
-        borderWidth: 1,
-        borderColor: "#AAA",
-        borderRadius: 30,
-        marginRight: 12,
-    },
-
-    saleDetails: {
-        justifyContent: "center",
-    },
-
-    productName: {
-        fontSize: 16,
-        fontWeight: "700",
-    },
-
-    productAddress: {
-        fontSize: 12,
-        color: "#666",
-        marginVertical: 4,
-    },
-
-    productWeight: {
-        fontSize: 14,
-        fontWeight: "600",
-    },
-
-    // ADD BUTTON
     addButton: {
-        marginBottom: 15,
-        // backgroundColor: "black",
-        paddingVertical: 14,
-        borderRadius: 12,
+        position: "absolute",
+        bottom: 30,
+        right: 30,
+        backgroundColor: colors.primary,
+        width: 55,
+        height: 55,
+        borderRadius: 30,
         alignItems: "center",
-        borderWidth: 1,
-        borderColor: "#000",
+        justifyContent: "center",
+        elevation: 5,
     },
 
     addButtonText: {
-        color: "#000",
-        fontSize: 16,
-        fontWeight: "600",
+        color: "#FFF",
+        fontSize: 28,
+        fontWeight: "700",
+        marginTop: -2,
     },
 });

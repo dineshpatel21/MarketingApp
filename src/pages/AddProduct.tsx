@@ -7,111 +7,136 @@ import {
     TouchableOpacity,
     ScrollView
 } from "react-native";
+import { launchImageLibrary } from "react-native-image-picker";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "../theme/colors";
 
-export default function AddProduct() {
+
+const AddProduct = ()=> {
+
+    const onClickUpload = () => {
+        launchImageLibrary({ mediaType: 'photo', quality: 1 }, (response: any) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.errorCode) {
+                console.log('Error: ', response.errorCode);
+            } else {
+                console.log('Selected image:', response.assets[0].uri);
+            }
+        });
+    };
+
     return (
-        <ScrollView
-            style={{ flex: 1, backgroundColor: "#FFF" }}
-            contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
-            showsVerticalScrollIndicator={false}
-        >
-            {/* PICK IMAGE */}
-            <Text style={styles.label}>Pick Image</Text>
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView
+                style={{ flex: 1, backgroundColor: colors.beige }}
+                contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
+            >
+                {/* PICK IMAGE */}
+                <Text style={styles.label}>Pick Image</Text>
 
-            <TouchableOpacity style={styles.imagePicker}>
-                <View style={styles.circle}>
-                    <Text style={styles.plus}>+</Text>
-                </View>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.imagePicker} onPress={onClickUpload}>
+                    <View style={styles.circle}>
+                        <Text style={styles.plus}>+</Text>
+                    </View>
+                </TouchableOpacity>
 
-            {/* TITLE */}
-            <Text style={styles.label}>Title</Text>
-            <TextInput placeholder="Enter title" style={styles.input} />
+                {/* TITLE */}
+                <Text style={styles.label}>Title</Text>
+                <TextInput placeholder="Enter title" placeholderTextColor={colors.textLight} style={styles.input} />
 
-            {/* QUANTITY */}
-            <Text style={styles.label}>Quantity</Text>
-            <TextInput placeholder="Enter quantity" style={styles.input} />
+                {/* QUANTITY */}
+                <Text style={styles.label}>Quantity</Text>
+                <TextInput placeholder="Enter quantity" placeholderTextColor={colors.textLight} style={styles.input} />
 
-            {/* LOCATION */}
-            <Text style={styles.label}>Add Location</Text>
-            <TextInput
-                placeholder="Enter location"
-                style={[styles.input, { height: 120, textAlignVertical: "top" }]}
-                multiline={true}
-            />
+                {/* PRICE */}
+                <Text style={styles.label}>Price</Text>
+                <TextInput placeholder="Enter price" placeholderTextColor={colors.textLight} style={styles.input} />
 
-            {/* BUTTON */}
-            <TouchableOpacity style={styles.uploadBtn}>
-                <Text style={styles.uploadText}>Upload</Text>
-            </TouchableOpacity>
-        </ScrollView>
+                {/* LOCATION */}
+                <Text style={styles.label}>Add Location</Text>
+                <TextInput
+                    placeholder="Enter location"
+                    placeholderTextColor={colors.textLight}
+                    style={[styles.input, { height: 120, textAlignVertical: "top" }]}
+                    multiline={true}
+                />
+
+                {/* BUTTON */}
+                <TouchableOpacity style={styles.uploadBtn}>
+                    <Text style={styles.uploadText}>Upload</Text>
+                </TouchableOpacity>
+
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#FFF",
-        padding: 20,
-    },
+export default AddProduct;
 
+const styles = StyleSheet.create({
     label: {
         fontSize: 16,
-        fontWeight: "600",
+        fontWeight: "700",
         marginBottom: 6,
-        marginTop: 10,
+        marginTop: 12,
+        color: colors.textDark,
     },
 
     imagePicker: {
         width: "100%",
-        height: 160,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: "#999",
+        height: 170,
+        borderRadius: 14,
+        borderWidth: 2,
+        borderColor: colors.border,
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 15,
+        backgroundColor: "#FFF",
+        marginBottom: 20,
     },
 
     circle: {
-        width: 70,
-        height: 70,
+        width: 75,
+        height: 75,
         borderRadius: 40,
         borderWidth: 2,
-        borderColor: "#000",
+        borderColor: colors.primary,
         justifyContent: "center",
         alignItems: "center",
     },
 
     plus: {
-        fontSize: 32,
-        fontWeight: "bold",
+        fontSize: 34,
+        fontWeight: "800",
+        color: colors.primary,
     },
 
     input: {
         width: "100%",
-        borderWidth: 1,
-        borderColor: "#999",
-        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: colors.border,
+        borderRadius: 12,
         paddingHorizontal: 14,
         paddingVertical: 12,
         fontSize: 16,
-        marginBottom: 15,
+        backgroundColor: "#FFF",
+        color: colors.textDark,
+        marginBottom: 30,
+        elevation: 1,
     },
 
     uploadBtn: {
-        borderWidth: 1,
-        borderColor: "#000",
-        paddingVertical: 14,
+        backgroundColor: colors.primary,
+        paddingVertical: 16,
         borderRadius: 12,
         alignItems: "center",
         marginTop: 10,
-        marginBottom: 30,
+        elevation: 3,
     },
 
     uploadText: {
-        color: "#000",
-        fontSize: 16,
-        fontWeight: "600",
+        color: "#FFF",
+        fontSize: 18,
+        fontWeight: "700",
     },
 });
