@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     View,
     Text,
@@ -14,6 +14,12 @@ import { colors } from "../theme/colors";
 
 const Dashboard = (props: any) => {
     const { openDrawer } = props;
+
+    const [sales, setSales] = useState("10,000")
+    const [checkIn, setCheckIn] = useState("10:30 AM")
+    const [checkOut, setCheckOut] = useState("6:00 PM")
+    const [orders, setOrders] = useState({ order: 30, date: '21 Sep' })
+    const [salesList, setSalesList] = useState([])
 
     const recentSales = [
         { id: "1", name: "Apples", address: "Shiv Nagar Ring Road…", weight: "15 Kg" },
@@ -36,29 +42,29 @@ const Dashboard = (props: any) => {
                 <View style={styles.grid}>
                     <View style={styles.card}>
                         <Text style={styles.cardTitle}>Check In</Text>
-                        <Text style={styles.cardValue}>10:30 AM</Text>
+                        <Text style={styles.cardValue}>{checkIn}</Text>
                     </View>
 
                     <View style={styles.card}>
                         <Text style={styles.cardTitle}>Check Out</Text>
-                        <Text style={styles.cardValue}>6:00 PM</Text>
+                        <Text style={styles.cardValue}>{checkOut}</Text>
                     </View>
 
                     <View style={styles.card}>
                         <Text style={styles.cardTitle}>Total Orders</Text>
-                        <Text style={styles.cardValue}>30</Text>
-                        <Text style={styles.note}>21 Sep</Text>
+                        <Text style={styles.cardValue}>{orders.order}</Text>
+                        <Text style={styles.note}>{orders.date}</Text>
                     </View>
 
                     <View style={styles.card}>
                         <Text style={styles.cardTitle}>Sales</Text>
-                        <Text style={styles.cardValue}>₹ 10,000</Text>
+                        <Text style={styles.cardValue}>₹ {sales}</Text>
                     </View>
                 </View>
 
-                 <View style={{ backgroundColor: colors.beige, marginVertical: 10}}>
-                            <Text style={styles.sectionTitle}>Recent Sales</Text>
-                        </View>
+                <View style={{ backgroundColor: colors.beige, marginVertical: 10 }}>
+                    <Text style={styles.sectionTitle}>Recent Sales</Text>
+                </View>
 
                 {/* RECENT SALES */}
                 <FlatList
@@ -66,7 +72,6 @@ const Dashboard = (props: any) => {
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => <RecentSales item={item} />}
                     showsVerticalScrollIndicator={false}
-                    // contentContainerStyle={{ paddingBottom: 40 }}
                 />
 
 
@@ -99,7 +104,7 @@ const styles = StyleSheet.create({
         borderRadius: 14,
         padding: 16,
         borderWidth: 1.5,
-        borderColor: colors.cardBorder,
+        borderColor: colors.border,
         marginBottom: 16,
         elevation: 2,
     },

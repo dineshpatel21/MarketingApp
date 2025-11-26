@@ -9,14 +9,31 @@ import {
 } from "react-native";
 import { colors } from "../theme/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Utils } from "../../Utils";
+import { login } from "../services/Services";
 
 const LoginScreen = (props: any) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const onLogin = () => {
+    const onLogin = async () => {
         props.navigation.replace("Dashboard");
+        const body = {
+            "email": "omkarsh805@gmail.com",
+            "password": "Omdeep@1",
+        }
+
+        try {
+            await login(body).then((res: any) => { 
+              console.log("login result :", JSON.stringify(res));
+            })
+
+        } catch (error) {
+
+        }
+
     };
+
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -29,37 +46,37 @@ const LoginScreen = (props: any) => {
                     resizeMode="contain"
                 />
 
-                {/* CARD */}
-                <View style={styles.card}>
-                    <Text style={styles.heading}>Login</Text>
-
-                    {/* EMAIL */}
+                {/* EMAIL */}
+                <View style={{ width: "90%" }}>
                     <Text style={styles.label}>Email</Text>
                     <TextInput
                         placeholder="Enter email"
-                        placeholderTextColor="#9a9a9a"
+                        placeholderTextColor={colors.textLight}
                         value={email}
                         onChangeText={setEmail}
                         style={styles.input}
                     />
+                </View>
 
-                    {/* PASSWORD */}
+                {/* PASSWORD */}
+                <View style={{ width: "90%" }}>
                     <Text style={styles.label}>Password</Text>
                     <TextInput
                         placeholder="Enter password"
-                        placeholderTextColor="#9a9a9a"
+                        placeholderTextColor={colors.textLight}
                         secureTextEntry
                         value={password}
                         onChangeText={setPassword}
                         style={styles.input}
                     />
-
-                    {/* BUTTON */}
-                    <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
-                        <Text style={styles.loginButtonText}>Login</Text>
-                    </TouchableOpacity>
                 </View>
+
+                {/* BUTTON */}
+                <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
+                    <Text style={styles.loginButtonText}>Login</Text>
+                </TouchableOpacity>
             </View>
+            {/* </View> */}
         </SafeAreaView>
     );
 };
@@ -71,18 +88,20 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.beige,
         alignItems: "center",
-        paddingTop: 20,
+        justifyContent: "center",
+        paddingHorizontal: 20,
     },
 
     logo: {
-        width: 170,
-        height: 170,
+        width: 200,
+        height: 200,
         marginBottom: 5,
         marginTop: 10,
     },
 
     card: {
-        width: "88%",
+        // width: "100%",
+        flex: 1,
         backgroundColor: colors.white,
         padding: 25,
         borderRadius: 20,
@@ -112,6 +131,7 @@ const styles = StyleSheet.create({
 
     input: {
         width: "100%",
+        color: colors.textDark,
         backgroundColor: "#fff",
         borderWidth: 1.5,
         borderColor: colors.primary,
@@ -122,6 +142,7 @@ const styles = StyleSheet.create({
     },
 
     loginButton: {
+        width: "90%",
         backgroundColor: colors.primary,
         paddingVertical: 14,
         borderRadius: 30,

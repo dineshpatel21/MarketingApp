@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     saleCard: {
         flexDirection: "row",
         borderWidth: 1.5,
-        borderColor: colors.cardBorder,
+        borderColor: colors.border,
         backgroundColor: "#FFF",
         borderRadius: 14,
         padding: 14,

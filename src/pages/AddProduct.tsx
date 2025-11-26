@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     View,
     Text,
@@ -10,9 +10,27 @@ import {
 import { launchImageLibrary } from "react-native-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../theme/colors";
+import { Add_Product } from "../services/Services";
+import { Dropdown } from "react-native-element-dropdown";
 
 
-const AddProduct = ()=> {
+const AddProduct = () => {
+    const [product, setProduct] = useState(null);
+    const [category, setCategory] = useState(null);
+    const [categoryList, setCategoryList] = useState([])
+    const [productList, setProductList] = useState([])
+    const [image, setImage] = useState()
+    const [title, setTitle] = useState()
+    const [quantity, setQuantity] = useState()
+    const [price, setPrice] = useState()
+    const [location, setLocation] = useState()
+
+    const items = [
+        { label: "Apple", value: "1" },
+        { label: "Banana", value: "2" },
+        { label: "Grapes", value: "3" },
+        { label: "Mango", value: "4" },
+    ];
 
     const onClickUpload = () => {
         launchImageLibrary({ mediaType: 'photo', quality: 1 }, (response: any) => {
@@ -25,6 +43,30 @@ const AddProduct = ()=> {
             }
         });
     };
+
+    const onUpload = async () => {
+        const body = {
+            "id": 4,
+            "emp_id": "3",
+            "title": "ffff",
+            "quantity": "324",
+            "price": "8000",
+            "location": "asdf",
+            "image": "1764161914.jpeg",
+            "created_at": "2025-11-26 18:28:34",
+            "updated_at": "2025-11-26 18:30:02",
+            "emp_name": "Omdeep Bareth"
+        }
+
+        try {
+            await Add_Product(body).then((res: any) => {
+
+            })
+
+        } catch (error) {
+
+        }
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -43,27 +85,84 @@ const AddProduct = ()=> {
 
                 {/* TITLE */}
                 <Text style={styles.label}>Title</Text>
-                <TextInput placeholder="Enter title" placeholderTextColor={colors.textLight} style={styles.input} />
+                <TextInput
+                    value={title}
+                    onChangeText={(text: any) => setTitle(text)}
+                    placeholder="Enter title"
+                    placeholderTextColor={colors.textLight}
+                    style={styles.input}
+                />
 
                 {/* QUANTITY */}
                 <Text style={styles.label}>Quantity</Text>
-                <TextInput placeholder="Enter quantity" placeholderTextColor={colors.textLight} style={styles.input} />
+                <TextInput
+                    value={quantity}
+                    onChangeText={(text: any) => setQuantity(text)}
+                    placeholder="Enter quantity"
+                    placeholderTextColor={colors.textLight}
+                    style={styles.input} />
+
+                <Text style={styles.label}>Select Category</Text>
+                <Dropdown
+                    style={styles.input}
+                    search
+                    searchPlaceholder="Search category"
+                    data={items}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Choose category"
+                    value={category}
+                    onChange={(item) => {
+                        setCategory(item.value);
+                    }}
+                />
+
+                {/* PRODUCT */}
+
+                <Text style={styles.label}>Select Product</Text>
+                <Dropdown
+                    style={styles.input}
+                    search
+                    searchPlaceholder="Search product"
+                    data={items}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Choose product"
+                    value={product}
+                    onChange={(item) => {
+                        setProduct(item.value);
+                    }}
+                />
+
+                {/* PRODUCT */}
 
                 {/* PRICE */}
                 <Text style={styles.label}>Price</Text>
-                <TextInput placeholder="Enter price" placeholderTextColor={colors.textLight} style={styles.input} />
+                <TextInput
+                    value={quantity}
+                    onChangeText={(text: any) => setPrice(text)}
+                    placeholder="Enter price"
+                    placeholderTextColor={colors.textLight}
+                    style={styles.input}
+                />
 
                 {/* LOCATION */}
-                <Text style={styles.label}>Add Location</Text>
+                <View style={styles.locationContainer}>
+                    <Text style={[styles.label, { marginTop: 0 }]}>Add Location</Text>
+                    <TouchableOpacity style={styles.addButton}>
+                        <Text style={styles.addButtonText}>+</Text>
+                    </TouchableOpacity>
+                </View>
                 <TextInput
-                    placeholder="Enter location"
+                    value={location}
+                    // placeholder="Enter location"
                     placeholderTextColor={colors.textLight}
                     style={[styles.input, { height: 120, textAlignVertical: "top" }]}
                     multiline={true}
                 />
 
                 {/* BUTTON */}
-                <TouchableOpacity style={styles.uploadBtn}>
+                <TouchableOpacity style={styles.uploadBtn} onPress={onUpload}>
                     <Text style={styles.uploadText}>Upload</Text>
                 </TouchableOpacity>
 
@@ -121,7 +220,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         backgroundColor: "#FFF",
         color: colors.textDark,
-        marginBottom: 30,
+        marginBottom: 20,
         elevation: 1,
     },
 
@@ -138,5 +237,35 @@ const styles = StyleSheet.create({
         color: "#FFF",
         fontSize: 18,
         fontWeight: "700",
+    },
+
+    dropdown: {
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 10,
+    },
+    locationContainer: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    addLocation: {
+        marginLeft: 8
+    },
+    addButton: {
+
+        backgroundColor: colors.primary,
+        width: 25,
+        height: 25,
+        borderRadius: 30,
+        alignItems: "center",
+        justifyContent: "center",
+        marginLeft: 8
+
+    },
+    addButtonText: {
+        color: "#FFF",
+        fontSize: 14,
+        fontWeight: "700",
+        marginTop: -2,
     },
 });

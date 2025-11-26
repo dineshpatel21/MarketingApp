@@ -5,7 +5,6 @@ export const colors = {
     gold: "#D8B06A",
     black: "#000000",
     white: "#FFFFFF",
-    cardBorder: "#F2C1C3",
     border: "#F2C1C3",
 
     // UI Helpers
