@@ -8,9 +8,9 @@ const RecentSales = ({ item }: any) => {
             <View style={styles.productImage} />
 
             <View style={styles.saleDetails}>
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productAddress}>{item.address}</Text>
-                <Text style={styles.productWeight}>{item.weight}</Text>
+                <Text style={styles.productName}>{item.title}</Text>
+                <Text style={styles.productAddress}>{item.location}</Text>
+                <Text style={styles.productWeight}>{item.price}</Text>
             </View>
         </View>
     )

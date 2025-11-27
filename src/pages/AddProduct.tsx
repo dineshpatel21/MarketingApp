@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -10,7 +10,7 @@ import {
 import { launchImageLibrary } from "react-native-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../theme/colors";
-import { Add_Product } from "../services/Services";
+import { Add_Product, get_category_list, get_product_list } from "../services/Services";
 import { Dropdown } from "react-native-element-dropdown";
 
 
@@ -24,6 +24,38 @@ const AddProduct = () => {
     const [quantity, setQuantity] = useState()
     const [price, setPrice] = useState()
     const [location, setLocation] = useState()
+
+    useEffect(() => {
+        getCategoryList()
+    }, [])
+
+    const getCategoryList = async () => {
+        try {
+            await get_category_list().then(async (res: any) => {
+                console.log("category result :", JSON.stringify(res));
+                if (res.status) {
+                    const newCategoryList = res.data.map((item: any) => ({ ...item, label: item.title, value: item.id }))
+                    setCategoryList(newCategoryList)
+                }
+            })
+        } catch (error) {
+
+        }
+    }
+
+    const getProductList = async (categoryId: number) => {
+        try {
+            await get_product_list(categoryId).then(async (res: any) => {
+                console.log("product result :", JSON.stringify(res));
+                if (res.status) {
+                    const newProductList = res.data.map((item: any) => ({ ...item, label: item.title, value: item.id }))
+                    setProductList(newProductList)
+                }
+            })
+        } catch (error) {
+
+        }
+    }
 
     const items = [
         { label: "Apple", value: "1" },
@@ -107,13 +139,14 @@ const AddProduct = () => {
                     style={styles.input}
                     search
                     searchPlaceholder="Search category"
-                    data={items}
+                    data={categoryList}
                     labelField="label"
                     valueField="value"
                     placeholder="Choose category"
                     value={category}
                     onChange={(item) => {
                         setCategory(item.value);
+                        getProductList(item.value)
                     }}
                 />
 
@@ -124,13 +157,14 @@ const AddProduct = () => {
                     style={styles.input}
                     search
                     searchPlaceholder="Search product"
-                    data={items}
+                    data={productList}
                     labelField="label"
                     valueField="value"
                     placeholder="Choose product"
                     value={product}
                     onChange={(item) => {
                         setProduct(item.value);
+                        setPrice(item.price)
                     }}
                 />
 
@@ -139,8 +173,9 @@ const AddProduct = () => {
                 {/* PRICE */}
                 <Text style={styles.label}>Price</Text>
                 <TextInput
-                    value={quantity}
-                    onChangeText={(text: any) => setPrice(text)}
+                    value={price}
+                    // onChangeText={(text: any) => setPrice(text)}
+                    editable={false}
                     placeholder="Enter price"
                     placeholderTextColor={colors.textLight}
                     style={styles.input}
@@ -246,7 +281,8 @@ const styles = StyleSheet.create({
     },
     locationContainer: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 6
     },
     addLocation: {
         marginLeft: 8

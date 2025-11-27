@@ -17,17 +17,20 @@ const LoginScreen = (props: any) => {
     const [password, setPassword] = useState("");
 
     const onLogin = async () => {
-        props.navigation.replace("Dashboard");
         const body = {
-            "email": "omkarsh805@gmail.com",
-            "password": "Omdeep@1",
+            "email": email,
+            "password": password,
         }
 
         try {
-            await login(body).then((res: any) => { 
-              console.log("login result :", JSON.stringify(res));
+            await login(body).then(async (res: any) => {
+                console.log("login result :", JSON.stringify(res));
+                if (res.status) {
+                    props.navigation.replace("Dashboard");
+                    await Utils.storeData("logged_user", JSON.stringify(res.user))
+                    await Utils.storeData("token", res.token)
+                }
             })
-
         } catch (error) {
 
         }

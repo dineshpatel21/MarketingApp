@@ -2,8 +2,8 @@ import { Method, StageURL } from "../../key";
 import { Utils } from "../../Utils";
 
 export const login = async (body: any) => {
-    console.log("Login body : ",body);
-    
+    console.log("Login body : ", body);
+
     return new Promise(async (resolve, reject) => {
         try {
             let fetchParameter = {
@@ -14,9 +14,31 @@ export const login = async (body: any) => {
                     'Content-Type': 'application/json',
                 },
             }
-            let serverResponse = await fetch(StageURL.url + '/applogin', fetchParameter);
-            console.log("Server Login Response : ",JSON.stringify(serverResponse));
-            
+            let serverResponse = await fetch(StageURL.url + 'api/applogin', fetchParameter);
+            let response = await serverResponse.json();
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export const logout = async () => {
+
+    return new Promise(async (resolve, reject) => {
+        const token = await Utils.getData("token")
+        console.log("Token : ", token);
+
+        try {
+            let fetchParameter = {
+                method: Method.POST,
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            }
+            let serverResponse = await fetch(StageURL.url + 'public/api/applogout', fetchParameter);
             let response = await serverResponse.json();
             resolve(response);
         }
@@ -27,8 +49,8 @@ export const login = async (body: any) => {
 }
 
 export const Dashboard = async (body: any) => {
-    console.log("Dashboard body : ",body);
-    
+    console.log("Dashboard body : ", body);
+
     return new Promise(async (resolve, reject) => {
         try {
             let fetchParameter = {
@@ -50,7 +72,7 @@ export const Dashboard = async (body: any) => {
 
 
 export const Add_Product = async (body: any) => {
-    console.log("Add Product Body : ",body);
+    console.log("Add Product Body : ", body);
     
     return new Promise(async (resolve, reject) => {
         try {
@@ -63,6 +85,70 @@ export const Add_Product = async (body: any) => {
                 },
             }
             let serverResponse = await fetch(StageURL.url + '/store/insert', fetchParameter);
+            let response = await serverResponse.json();
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export const get_category_list = async () => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let fetchParameter = {
+                method: Method.GET,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            }
+            let serverResponse = await fetch(StageURL.url + 'api/category/view', fetchParameter);
+            let response = await serverResponse.json();
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    })
+}
+
+
+export const get_product_list = async (category_id: number) => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let fetchParameter = {
+                method: Method.GET,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            }
+            let serverResponse = await fetch(StageURL.url + `api/product/get-by-id/${category_id}`, fetchParameter);
+            let response = await serverResponse.json();
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export const get_recent_sales = async () => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let fetchParameter = {
+                method: Method.GET,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            }
+            let serverResponse = await fetch(StageURL.url + `api/store/view`, fetchParameter);
             let response = await serverResponse.json();
             resolve(response);
         }

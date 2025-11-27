@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -10,10 +10,11 @@ import Header from "../components/Header";
 import RecentSales from "../components/RecentSales";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../theme/colors";
+import { get_recent_sales } from "../services/Services";
 
 
 const Dashboard = (props: any) => {
-    const { openDrawer } = props;
+    const { openDrawer, user } = props;
 
     const [sales, setSales] = useState("10,000")
     const [checkIn, setCheckIn] = useState("10:30 AM")
@@ -28,6 +29,23 @@ const Dashboard = (props: any) => {
         { id: "4", name: "Apples", address: "Shiv Nagar Ring Road…", weight: "15 Kg" },
     ];
 
+    useEffect(() => {
+            getRecentList()
+        }, [])
+    
+        const getRecentList = async () => {
+            try {
+                await get_recent_sales().then(async (res: any) => {
+                    console.log("recent sales result :", JSON.stringify(res));
+                    if (res.status) {
+                        setSalesList(res.data)
+                    }
+                })
+            } catch (error) {
+    
+            }
+        }
+
     const onAddProduct = () => {
         props.navigation.navigate("AddProduct");
     };
@@ -36,7 +54,7 @@ const Dashboard = (props: any) => {
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
 
-                <Header openDrawer={openDrawer} ScreenName={"Dashboard"} />
+                <Header openDrawer={openDrawer} ScreenName={"Dashboard"} user={user}/>
 
                 {/* TOP CARDS */}
                 <View style={styles.grid}>
@@ -68,8 +86,8 @@ const Dashboard = (props: any) => {
 
                 {/* RECENT SALES */}
                 <FlatList
-                    data={recentSales}
-                    keyExtractor={(item) => item.id}
+                    data={salesList}
+                    keyExtractor={(item: any, index: number) => index+"recentlist"}
                     renderItem={({ item }) => <RecentSales item={item} />}
                     showsVerticalScrollIndicator={false}
                 />

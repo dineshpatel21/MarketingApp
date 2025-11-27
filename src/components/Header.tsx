@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
 const Header = (props: any) => {
-    const { openDrawer } = props;
+    const { openDrawer, user } = props;
 
     const onDrawerPress = () => {
         openDrawer();
@@ -15,7 +15,7 @@ const Header = (props: any) => {
             </TouchableOpacity>
 
             <View style={styles.profileContainer}>
-                <Text style={styles.userName}>Alan</Text>
+                <Text style={styles.userName}>{user.name}</Text>
                 <TouchableOpacity style={styles.profileCircle} />
             </View>
         </View >

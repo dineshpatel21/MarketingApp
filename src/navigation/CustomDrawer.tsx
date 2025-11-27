@@ -6,16 +6,37 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { colors } from "../theme/colors";
+import { Utils } from "../../Utils";
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import { logout } from "../services/Services";
 
 
 const CustomDrawer = (props: any) => {
-    const { DRAWER_WIDTH, translateX, closeDrawer } = props
+    const { DRAWER_WIDTH, translateX, closeDrawer, user } = props
+    const navigation = useNavigation()
+    
 
-    const onLogout = () => {
-        closeDrawer();
+    const onLogout = async () => {
+        try {
+            await logout().then(async (res: any) => {
+                console.log("logout result :", JSON.stringify(res));
+                if (res.status) {
+                    closeDrawer();
+                    Utils.clearAllData()
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: "LoginScreen" }],
+                        })
+                    );
+                }
+            })
+        } catch (error) {
+
+        }
     }
 
-   
+
 
     return (
         <Animated.View
@@ -46,7 +67,7 @@ const CustomDrawer = (props: any) => {
                     }}
                 />
 
-                <Text style={{ fontSize: 18, fontWeight: "600" }}>Alan</Text>
+                <Text style={{ fontSize: 18, fontWeight: "600" }}>{user.name}</Text>
 
                 <View
                     style={{
@@ -56,6 +77,10 @@ const CustomDrawer = (props: any) => {
                         marginVertical: 20,
                     }}
                 />
+                <Text style={{ fontSize: 14, fontWeight: "500" }}>{user.email}</Text>
+                <Text style={{ fontSize: 14, fontWeight: "500" }}>{user.number}</Text>
+                <Text style={{ fontSize: 14, fontWeight: "500" }}>{user.aadhar}</Text>
+                <Text style={{ fontSize: 14, fontWeight: "500" }}>{user.address}</Text>
             </View>
 
             {/* Logout */}

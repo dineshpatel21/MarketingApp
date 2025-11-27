@@ -6,8 +6,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Dashboard from "../pages/Dashboard"
 import AddProduct from "../pages/AddProduct";
 import LoginScreen from "../pages/LoginScreen";
-import CustomDrawer from "../navigation/CustomDrawer";
+import CustomDrawer from "./CustomDrawer";
 import { navigationRef } from "./NavigationService";
+import { Utils } from "../../Utils";
 
 
 const Stack = createNativeStackNavigator()
@@ -15,11 +16,10 @@ const Stack = createNativeStackNavigator()
 const { width } = Dimensions.get("window");
 const DRAWER_WIDTH = width * .75
 
-const Navigation = () => {
+const Navigation = (props: any) => {
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
-
 
     useEffect(() => {
         if (drawerVisible) {
@@ -56,6 +56,8 @@ const Navigation = () => {
         }, 500);
     };
 
+    const user = JSON.parse(props.loggeIn)
+
     return (
         <NavigationContainer ref={navigationRef}>
 
@@ -77,24 +79,30 @@ const Navigation = () => {
                                     translateX={translateX}
                                     DRAWER_WIDTH={DRAWER_WIDTH}
                                     closeDrawer={closeDrawer}
+                                    user={user}
                                 />
                             </View>
                         </TouchableWithoutFeedback>
-
-                        {/* REMAINING SCREEN -> outside touch area */}
-                        <View style={{ flex: 1 }} />
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
-            
-            <Stack.Navigator screenOptions={{}}>
+
+            {user ? <Stack.Navigator screenOptions={{}}>
+                <Stack.Screen name="Dashboard" options={{ headerShown: false }}>
+                    {props => <Dashboard {...props} drawerVisible={drawerVisible} translateX={translateX} openDrawer={openDrawer} user={user}/>}
+                </Stack.Screen>
                 <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="AddProduct" component={AddProduct} options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Store' }} />
-                <Stack.Screen name="Dashboard" options={{ headerShown: false }}>
-                    {props => <Dashboard {...props} drawerVisible={drawerVisible} translateX={translateX} openDrawer={openDrawer} />}
-                </Stack.Screen>
 
             </Stack.Navigator>
+                :
+                <Stack.Navigator screenOptions={{}}>
+                    <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+                    <Stack.Screen name="AddProduct" component={AddProduct} options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Store' }} />
+                    <Stack.Screen name="Dashboard" options={{ headerShown: false }}>
+                        {props => <Dashboard {...props} drawerVisible={drawerVisible} translateX={translateX} openDrawer={openDrawer} />}
+                    </Stack.Screen>
+                </Stack.Navigator>}
         </NavigationContainer>
     )
 }

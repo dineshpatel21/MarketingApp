@@ -1,5 +1,5 @@
 export const StageURL = {
-    url: 'https://marketingapp.listingmybusiness.in/api'
+    url: 'https://marketingapp.listingmybusiness.in/'
 };
 
 export const Method = {
