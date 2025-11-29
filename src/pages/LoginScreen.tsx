@@ -6,6 +6,8 @@ import {
     Image,
     TextInput,
     TouchableOpacity,
+    ActivityIndicator,
+    ToastAndroid,
 } from "react-native";
 import { colors } from "../theme/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,10 +15,12 @@ import { Utils } from "../../Utils";
 import { login } from "../services/Services";
 
 const LoginScreen = (props: any) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [loader, setLoader] = useState(false)
 
     const onLogin = async () => {
+        setLoader(true)
         const body = {
             "email": email,
             "password": password,
@@ -26,13 +30,18 @@ const LoginScreen = (props: any) => {
             await login(body).then(async (res: any) => {
                 console.log("login result :", JSON.stringify(res));
                 if (res.status) {
+                    setLoader(false)
                     props.navigation.replace("Dashboard");
                     await Utils.storeData("logged_user", JSON.stringify(res.user))
                     await Utils.storeData("token", res.token)
+                } else {
+                    ToastAndroid.show(res.message, ToastAndroid.SHORT);
                 }
             })
         } catch (error) {
 
+        } finally {
+            setLoader(false)
         }
 
     };
@@ -76,7 +85,9 @@ const LoginScreen = (props: any) => {
 
                 {/* BUTTON */}
                 <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
-                    <Text style={styles.loginButtonText}>Login</Text>
+                    {loader
+                        ? <ActivityIndicator size={"small"} color={colors.white} />
+                        : <Text style={styles.loginButtonText}>Login</Text>}
                 </TouchableOpacity>
             </View>
             {/* </View> */}

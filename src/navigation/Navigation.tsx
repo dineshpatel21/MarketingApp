@@ -92,7 +92,9 @@ const Navigation = (props: any) => {
                     {props => <Dashboard {...props} drawerVisible={drawerVisible} translateX={translateX} openDrawer={openDrawer} user={user}/>}
                 </Stack.Screen>
                 <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="AddProduct" component={AddProduct} options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Store' }} />
+                <Stack.Screen name="AddProduct" options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Store' }}>
+                    {props => <AddProduct {...props} user={user}/>}
+                </Stack.Screen>
 
             </Stack.Navigator>
                 :

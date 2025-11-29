@@ -1,14 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { colors } from '../theme/colors';
+import { StageURL } from '../../key';
 
 const RecentSales = ({ item }: any) => {
     return (
         <View style={styles.saleCard}>
-            <View style={styles.productImage} />
+            <View style={styles.productImage}>
+                <Image source={{ uri: `${StageURL.url}images/product/${item.image}` }}
+                    style={{ width: '100%', height: '100%', borderRadius: 30 }} />
+            </View>
 
             <View style={styles.saleDetails}>
-                <Text style={styles.productName}>{item.title}</Text>
+                <Text style={styles.productName}>{item.pro_name} {`( ${item.cat_name} )`}</Text>
                 <Text style={styles.productAddress}>{item.location}</Text>
                 <Text style={styles.productWeight}>{item.price}</Text>
             </View>
@@ -33,7 +37,7 @@ const styles = StyleSheet.create({
     productImage: {
         width: 60,
         height: 60,
-        borderWidth: 1.5,
+        borderWidth: .5,
         borderColor: colors.primary,
         borderRadius: 30,
         marginRight: 14,

@@ -1,5 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import { StageURL } from '../../key';
+import { colors } from '../theme/colors';
 
 const Header = (props: any) => {
     const { openDrawer, user } = props;
@@ -11,14 +13,16 @@ const Header = (props: any) => {
     return (
         <View style={styles.header} >
             <TouchableOpacity style={styles.menuButton} onPress={onDrawerPress}>
-                <Image source={require("../assets/icons/hamburger.png")} tintColor={"#000"} style={{ width: 32, height:32 }} />
+                <Image source={require("../assets/icons/hamburger.png")} tintColor={"#000"} style={{ width: 32, height: 32 }} />
             </TouchableOpacity>
 
             <View style={styles.profileContainer}>
-                <Text style={styles.userName}>{user.name}</Text>
-                <TouchableOpacity style={styles.profileCircle} />
+                <Text style={styles.userName}>{user?.name}</Text>
+                <TouchableOpacity style={styles.profileCircle}>
+                    <Image source={{ uri: `${StageURL.url}images/employee/${user?.image}` }} style={{ width: '100%', height: '100%', borderRadius: 20 }} />
+                </TouchableOpacity>
             </View>
-        </View >
+        </View>
     )
 }
 
@@ -52,8 +56,8 @@ const styles = StyleSheet.create({
         width: 35,
         height: 35,
         borderRadius: 20,
-        borderWidth: 2,
-        borderColor: "black",
+        borderWidth: 1,
+        borderColor: colors.textLight,
     },
 
     profileContainer: {

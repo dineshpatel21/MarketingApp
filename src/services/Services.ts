@@ -72,7 +72,6 @@ export const Dashboard = async (body: any) => {
 
 
 export const Add_Product = async (body: any) => {
-    console.log("Add Product Body : ", body);
     
     return new Promise(async (resolve, reject) => {
         try {
@@ -80,11 +79,10 @@ export const Add_Product = async (body: any) => {
                 method: Method.POST,
                 body: JSON.stringify(body),
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                 },
             }
-            let serverResponse = await fetch(StageURL.url + '/store/insert', fetchParameter);
+            let serverResponse = await fetch(StageURL.url + 'api/store/insert', fetchParameter);
             let response = await serverResponse.json();
             resolve(response);
         }
@@ -149,6 +147,49 @@ export const get_recent_sales = async () => {
                 },
             }
             let serverResponse = await fetch(StageURL.url + `api/store/view`, fetchParameter);
+            let response = await serverResponse.json();
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    })
+}
+
+
+export const get_checkin_checkout = async (userId: number) => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let fetchParameter = {
+                method: Method.GET,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            }
+            let serverResponse = await fetch(StageURL.url + `api/dashboard/checkin/${userId}`, fetchParameter);
+            let response = await serverResponse.json();
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export const get_total_orders = async (userId: number) => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let fetchParameter = {
+                method: Method.GET,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            }
+            let serverResponse = await fetch(StageURL.url + `api/dashboard/total/${userId}`, fetchParameter);
             let response = await serverResponse.json();
             resolve(response);
         }

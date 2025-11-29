@@ -5,29 +5,44 @@ import {
     StyleSheet,
     TextInput,
     TouchableOpacity,
-    ScrollView
+    ScrollView,
+    Image,
+    ActivityIndicator,
+    Alert
 } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../theme/colors";
 import { Add_Product, get_category_list, get_product_list } from "../services/Services";
 import { Dropdown } from "react-native-element-dropdown";
+import ImageCropPicker from "react-native-image-crop-picker";
 
 
-const AddProduct = () => {
+const AddProduct = (props: any) => {
+    const { user } = props
+    const { getRecentList } = props.route.params
+
     const [product, setProduct] = useState(null);
     const [category, setCategory] = useState(null);
     const [categoryList, setCategoryList] = useState([])
     const [productList, setProductList] = useState([])
     const [image, setImage] = useState()
     const [title, setTitle] = useState()
-    const [quantity, setQuantity] = useState()
-    const [price, setPrice] = useState()
-    const [location, setLocation] = useState()
+    const [quantity, setQuantity] = useState<any>("1")
+    const [price, setPrice] = useState<any>()
+    const [priceValue, setPriceValue] = useState<any>()
+    const [location, setLocation] = useState<any>()
+    const [loader, setLoader] = useState(false)
 
     useEffect(() => {
         getCategoryList()
     }, [])
+
+    useEffect(() => {
+        if (price && quantity) {
+            setPriceValue((price * parseInt(quantity)).toString())
+        }
+    }, [quantity, price])
 
     const getCategoryList = async () => {
         try {
@@ -57,46 +72,125 @@ const AddProduct = () => {
         }
     }
 
-    const items = [
-        { label: "Apple", value: "1" },
-        { label: "Banana", value: "2" },
-        { label: "Grapes", value: "3" },
-        { label: "Mango", value: "4" },
-    ];
+
+    const pickFromCamera = () => {
+        launchCamera(
+            { mediaType: "photo", quality: 1 },
+            (response: any) => {
+                if (!response.didCancel && !response.errorCode) {
+                    setImage(response.assets[0].uri);
+                }
+            }
+        );
+    };
+
+    const pickFromGallery = () => {
+        launchImageLibrary(
+            { mediaType: "photo", quality: 1 },
+            (response: any) => {
+                if (!response.didCancel && !response.errorCode) {
+                    setImage(response.assets[0].uri);
+                }
+            }
+        );
+    };
 
     const onClickUpload = () => {
-        launchImageLibrary({ mediaType: 'photo', quality: 1 }, (response: any) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.errorCode) {
-                console.log('Error: ', response.errorCode);
-            } else {
-                console.log('Selected image:', response.assets[0].uri);
-            }
+        // Alert.alert(
+        //     "Upload Image",
+        //     "Choose an option",
+        //     [
+        //         {
+        //             text: "Camera",
+        //             onPress: () => pickFromCamera(),
+        //         },
+        //         {
+        //             text: "Gallery",
+        //             onPress: () => pickFromGallery(),
+        //         },
+        //         {
+        //             text: "Cancel",
+        //             style: "cancel",
+        //         },
+        //     ]
+        // );
+
+        Alert.alert(
+            "Upload Image",
+            "Choose an option",
+            [
+                { text: "Camera", onPress: pickCamera },
+                { text: "Gallery", onPress: pickImage },
+                { text: "Cancel", style: "cancel" }
+            ]
+        );
+
+    };
+
+    const pickCamera = () => {
+        ImageCropPicker.openCamera({
+            width: 400,
+            height: 400,
+            cropping: true,
+        }).then((image: any) => {
+            setImage(image.path);
         });
     };
 
+    const pickImage = () => {
+        ImageCropPicker.openPicker({
+            width: 400,
+            height: 400,
+            cropping: true,
+        }).then((image: any) => {
+            console.log(image.path);
+            setImage(image.path);
+        });
+    };
+
+
+    // const onClickUpload = () => {
+    //     launchImageLibrary({ mediaType: 'photo', quality: 1 }, (response: any) => {
+    //         if (response.didCancel) {
+    //             console.log('User cancelled image picker');
+    //         } else if (response.errorCode) {
+    //             console.log('Error: ', response.errorCode);
+    //         } else {
+    //             console.log('Selected image:', response.assets[0].uri);
+    //             setImage(response.assets[0].uri)
+    //         }
+    //     });
+    // };
+
     const onUpload = async () => {
-        const body = {
-            "id": 4,
-            "emp_id": "3",
-            "title": "ffff",
-            "quantity": "324",
-            "price": "8000",
-            "location": "asdf",
-            "image": "1764161914.jpeg",
-            "created_at": "2025-11-26 18:28:34",
-            "updated_at": "2025-11-26 18:30:02",
-            "emp_name": "Omdeep Bareth"
-        }
+        setLoader(true)
+        const formData = new FormData();
+        formData.append("emp_id", user.id);
+        formData.append("category_id", category);
+        formData.append("product_id", product);
+        formData.append("quantity", quantity);
+        formData.append("price", price);
+        formData.append("total", priceValue);
+        formData.append("location", location);
+        formData.append("image", {
+            uri: image,
+            name: "product.jpg",
+            type: "image/jpeg"
+        });
 
         try {
-            await Add_Product(body).then((res: any) => {
-
+            await Add_Product(formData).then((res: any) => {
+                console.log("ADDING PRODUCTS: ", JSON.stringify(res));
+                if (res.status) {
+                    props.navigation.goBack()
+                    getRecentList()
+                }
             })
 
         } catch (error) {
 
+        } finally {
+            setLoader(false)
         }
     }
 
@@ -110,25 +204,32 @@ const AddProduct = () => {
                 <Text style={styles.label}>Pick Image</Text>
 
                 <TouchableOpacity style={styles.imagePicker} onPress={onClickUpload}>
-                    <View style={styles.circle}>
-                        <Text style={styles.plus}>+</Text>
-                    </View>
+                    {
+                        image
+                            ?
+                            <Image source={{ uri: image }} style={{ width: '100%', height: '100%', borderRadius: 20 }} />
+                            :
+                            <View style={styles.circle}>
+                                <Text style={styles.plus}>+</Text>
+                            </View>
+                    }
                 </TouchableOpacity>
 
                 {/* TITLE */}
-                <Text style={styles.label}>Title</Text>
+                {/* <Text style={styles.label}>Title</Text>
                 <TextInput
                     value={title}
                     onChangeText={(text: any) => setTitle(text)}
                     placeholder="Enter title"
                     placeholderTextColor={colors.textLight}
                     style={styles.input}
-                />
+                /> */}
 
                 {/* QUANTITY */}
                 <Text style={styles.label}>Quantity</Text>
                 <TextInput
                     value={quantity}
+                    keyboardType="number-pad"
                     onChangeText={(text: any) => setQuantity(text)}
                     placeholder="Enter quantity"
                     placeholderTextColor={colors.textLight}
@@ -173,8 +274,7 @@ const AddProduct = () => {
                 {/* PRICE */}
                 <Text style={styles.label}>Price</Text>
                 <TextInput
-                    value={price}
-                    // onChangeText={(text: any) => setPrice(text)}
+                    value={priceValue}
                     editable={false}
                     placeholder="Enter price"
                     placeholderTextColor={colors.textLight}
@@ -184,12 +284,13 @@ const AddProduct = () => {
                 {/* LOCATION */}
                 <View style={styles.locationContainer}>
                     <Text style={[styles.label, { marginTop: 0 }]}>Add Location</Text>
-                    <TouchableOpacity style={styles.addButton}>
+                    {/* <TouchableOpacity style={styles.addButton}>
                         <Text style={styles.addButtonText}>+</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <TextInput
                     value={location}
+                    onChangeText={text => setLocation(text)}
                     // placeholder="Enter location"
                     placeholderTextColor={colors.textLight}
                     style={[styles.input, { height: 120, textAlignVertical: "top" }]}
@@ -198,7 +299,10 @@ const AddProduct = () => {
 
                 {/* BUTTON */}
                 <TouchableOpacity style={styles.uploadBtn} onPress={onUpload}>
-                    <Text style={styles.uploadText}>Upload</Text>
+                    {
+                        loader ?
+                            <ActivityIndicator size={"small"} color={colors.white} />
+                            : <Text style={styles.uploadText}>Upload</Text>}
                 </TouchableOpacity>
 
             </ScrollView>

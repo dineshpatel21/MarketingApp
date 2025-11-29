@@ -1,25 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Animated,
     View,
     Text,
     TouchableOpacity,
+    Image,
+    ActivityIndicator,
+    ToastAndroid,
+    StyleSheet,
 } from "react-native";
 import { colors } from "../theme/colors";
 import { Utils } from "../../Utils";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { logout } from "../services/Services";
+import { StageURL } from "../../key";
 
 
 const CustomDrawer = (props: any) => {
     const { DRAWER_WIDTH, translateX, closeDrawer, user } = props
     const navigation = useNavigation()
-    
+    const [loader, setLoader] = useState(false)
 
     const onLogout = async () => {
+        setLoader(true)
         try {
             await logout().then(async (res: any) => {
-                console.log("logout result :", JSON.stringify(res));
                 if (res.status) {
                     closeDrawer();
                     Utils.clearAllData()
@@ -29,10 +34,14 @@ const CustomDrawer = (props: any) => {
                             routes: [{ name: "LoginScreen" }],
                         })
                     );
+                } else {
+                    ToastAndroid.show(res.message, ToastAndroid.SHORT);
                 }
             })
         } catch (error) {
 
+        } finally {
+            setLoader(false)
         }
     }
 
@@ -56,31 +65,52 @@ const CustomDrawer = (props: any) => {
             }}
         >
             {/* Profile */}
-            <View style={{ alignItems: "center", marginBottom: 40 }}>
-                <View
-                    style={{
-                        width: 80,
-                        height: 80,
-                        backgroundColor: "#eee",
-                        borderRadius: 40,
-                        marginBottom: 10,
-                    }}
+            <View style={{ alignItems: "center", marginBottom: 10 }}>
+                <Image
+                    source={{ uri: `${StageURL.url}images/employee/${user?.image}` }}
+                    style={{ width: 100, height: 100, borderRadius: 50 }}
                 />
 
-                <Text style={{ fontSize: 18, fontWeight: "600" }}>{user.name}</Text>
+                <Text style={{ fontSize: 18, fontWeight: "600" }}>{user?.name}</Text>
 
                 <View
                     style={{
                         width: "80%",
                         height: 1,
                         backgroundColor: "#ccc",
-                        marginVertical: 20,
+                        marginVertical: 10,
                     }}
                 />
-                <Text style={{ fontSize: 14, fontWeight: "500" }}>{user.email}</Text>
-                <Text style={{ fontSize: 14, fontWeight: "500" }}>{user.number}</Text>
-                <Text style={{ fontSize: 14, fontWeight: "500" }}>{user.aadhar}</Text>
-                <Text style={{ fontSize: 14, fontWeight: "500" }}>{user.address}</Text>
+            </View>
+
+            <View style={{ gap: 10, }}>
+                <View>
+                    <Text style={styles.title}>
+                        Email
+                    </Text>
+                    <Text style={styles.value}>{user.email}</Text>
+                </View>
+
+                <View>
+                    <Text style={styles.title}>
+                        Mobile
+                    </Text>
+                    <Text style={styles.value}>{user.number}</Text>
+                </View>
+
+                <View>
+                    <Text style={styles.title}>
+                        Aadhaar
+                    </Text>
+                    <Text style={styles.value}>{user.aadhar}</Text>
+                </View>
+
+                <View>
+                    <Text style={styles.title}>
+                        Address
+                    </Text>
+                    <Text style={styles.value}>{user.address}</Text>
+                </View>
             </View>
 
             {/* Logout */}
@@ -101,11 +131,17 @@ const CustomDrawer = (props: any) => {
                         alignItems: "center",
                     }}
                 >
-                    <Text style={{ fontSize: 18, color: "#fff" }}>Logout</Text>
+                    {loader
+                        ? <ActivityIndicator size={"small"} color={colors.white} /> :
+                        <Text style={{ fontSize: 18, color: "#fff" }}>Logout</Text>}
                 </TouchableOpacity>
             </View>
         </Animated.View>
     );
 }
 
+const styles = StyleSheet.create({
+    title: { fontSize: 15, fontWeight: "600", color: colors.textLight },
+    value: { fontSize: 14, fontWeight: '400', color: colors.textDark }
+})
 export default CustomDrawer;

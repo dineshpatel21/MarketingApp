@@ -5,100 +5,133 @@ import {
     TouchableOpacity,
     StyleSheet,
     FlatList,
+    ActivityIndicator,
 } from "react-native";
 import Header from "../components/Header";
 import RecentSales from "../components/RecentSales";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../theme/colors";
-import { get_recent_sales } from "../services/Services";
+import { get_checkin_checkout, get_recent_sales, get_total_orders } from "../services/Services";
 
 
 const Dashboard = (props: any) => {
     const { openDrawer, user } = props;
 
-    const [sales, setSales] = useState("10,000")
-    const [checkIn, setCheckIn] = useState("10:30 AM")
-    const [checkOut, setCheckOut] = useState("6:00 PM")
-    const [orders, setOrders] = useState({ order: 30, date: '21 Sep' })
+    const [sales, setSales] = useState()
+    const [checkIn, setCheckIn] = useState()
+    const [checkOut, setCheckOut] = useState()
+    const [orders, setOrders] = useState()
     const [salesList, setSalesList] = useState([])
+    const [loader, setLoader] = useState(false)
+    const userId = user?.id
 
-    const recentSales = [
-        { id: "1", name: "Apples", address: "Shiv Nagar Ring Road…", weight: "15 Kg" },
-        { id: "2", name: "Bananas", address: "MG Road Near Market…", weight: "20 Kg" },
-        { id: "3", name: "Grapes", address: "Ring Road Sector 4…", weight: "12 Kg" },
-        { id: "4", name: "Apples", address: "Shiv Nagar Ring Road…", weight: "15 Kg" },
-    ];
 
     useEffect(() => {
-            getRecentList()
-        }, [])
-    
-        const getRecentList = async () => {
-            try {
-                await get_recent_sales().then(async (res: any) => {
-                    console.log("recent sales result :", JSON.stringify(res));
-                    if (res.status) {
-                        setSalesList(res.data)
-                    }
-                })
-            } catch (error) {
-    
-            }
+        getRecentList()
+        getCheckTime()
+        getTotalOrders()
+    }, [])
+
+    const getRecentList = async () => {
+        setLoader(true)
+        try {
+            await get_recent_sales().then(async (res: any) => {
+                console.log("recent sales result :", JSON.stringify(res));
+                if (res.status) {
+                    setSalesList(res.data)
+                }
+            })
+        } catch (error) {
+
+        } finally {
+            setLoader(false)
         }
+    }
+
+    const getCheckTime = async () => {
+        try {
+            await get_checkin_checkout(userId).then(async (res: any) => {
+                console.log("Check in out result :", JSON.stringify(res));
+                if (res.status) {
+                    setCheckIn(res.data.login_time)
+                    setCheckOut(res.data.logout_time)
+                }
+            })
+        } catch (error) {
+
+        }
+    }
+
+    const getTotalOrders = async () => {
+        try {
+            await get_total_orders(userId).then(async (res: any) => {
+                console.log("Total result :", JSON.stringify(res));
+                if (res.status) {
+                    setSales(res.total_amount)
+                    setOrders(res.total_orders)
+                }
+            })
+        } catch (error) {
+
+        }
+    }
 
     const onAddProduct = () => {
-        props.navigation.navigate("AddProduct");
+        props.navigation.navigate("AddProduct",{getRecentList : getRecentList});
     };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.container}>
+            {
+                loader ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size={"large"} color={colors.primary} />
+                </View> : <View style={styles.container}>
 
-                <Header openDrawer={openDrawer} ScreenName={"Dashboard"} user={user}/>
+                    <Header openDrawer={openDrawer} ScreenName={"Dashboard"} user={user} />
 
-                {/* TOP CARDS */}
-                <View style={styles.grid}>
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>Check In</Text>
-                        <Text style={styles.cardValue}>{checkIn}</Text>
+                    {/* TOP CARDS */}
+                    <View style={styles.grid}>
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>Check In</Text>
+                            <Text style={styles.cardValue}>{checkIn}</Text>
+                        </View>
+
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>Check Out</Text>
+                            <Text style={styles.cardValue}>{checkOut}</Text>
+                        </View>
+
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>Total Orders</Text>
+                            <Text style={styles.cardValue}>{orders}</Text>
+                            {/* <Text style={styles.note}>{orders.date}</Text> */}
+                        </View>
+
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>Sales</Text>
+                            <Text style={styles.cardValue}>₹ {sales}</Text>
+                        </View>
                     </View>
 
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>Check Out</Text>
-                        <Text style={styles.cardValue}>{checkOut}</Text>
+                    <View style={{ backgroundColor: colors.beige, marginVertical: 10 }}>
+                        <Text style={styles.sectionTitle}>Recent Sales</Text>
                     </View>
 
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>Total Orders</Text>
-                        <Text style={styles.cardValue}>{orders.order}</Text>
-                        <Text style={styles.note}>{orders.date}</Text>
-                    </View>
-
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>Sales</Text>
-                        <Text style={styles.cardValue}>₹ {sales}</Text>
-                    </View>
-                </View>
-
-                <View style={{ backgroundColor: colors.beige, marginVertical: 10 }}>
-                    <Text style={styles.sectionTitle}>Recent Sales</Text>
-                </View>
-
-                {/* RECENT SALES */}
-                <FlatList
-                    data={salesList}
-                    keyExtractor={(item: any, index: number) => index+"recentlist"}
-                    renderItem={({ item }) => <RecentSales item={item} />}
-                    showsVerticalScrollIndicator={false}
-                />
+                    {/* RECENT SALES */}
+                    <FlatList
+                        data={salesList}
+                        keyExtractor={(item: any, index: number) => index + "recentlist"}
+                        renderItem={({ item }) => <RecentSales item={item} />}
+                        showsVerticalScrollIndicator={false}
+                    />
 
 
-                {/* ADD PRODUCT BUTTON */}
-                <TouchableOpacity style={styles.addButton} onPress={onAddProduct}>
-                    <Text style={styles.addButtonText}>+</Text>
-                </TouchableOpacity>
+                    {/* ADD PRODUCT BUTTON */}
+                    <TouchableOpacity style={styles.addButton} onPress={onAddProduct}>
+                        <Text style={styles.addButtonText}>+</Text>
+                    </TouchableOpacity>
 
-            </View>
+                </View>}
         </SafeAreaView>
     );
 }
