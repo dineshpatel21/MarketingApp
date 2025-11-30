@@ -10,7 +10,6 @@ import {
     ActivityIndicator,
     Alert
 } from "react-native";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../theme/colors";
 import { Add_Product, get_category_list, get_product_list } from "../services/Services";
@@ -20,13 +19,13 @@ import ImageCropPicker from "react-native-image-crop-picker";
 
 const AddProduct = (props: any) => {
     const { user } = props
-    const { getRecentList } = props.route.params
+    const { getRecentList, LoginUser } = props.route.params
 
-    const [product, setProduct] = useState(null);
-    const [category, setCategory] = useState(null);
+    const [product, setProduct] = useState();
+    const [category, setCategory] = useState();
     const [categoryList, setCategoryList] = useState([])
     const [productList, setProductList] = useState([])
-    const [image, setImage] = useState()
+    const [image, setImage] = useState<any>()
     const [title, setTitle] = useState()
     const [quantity, setQuantity] = useState<any>("1")
     const [price, setPrice] = useState<any>()
@@ -40,14 +39,13 @@ const AddProduct = (props: any) => {
 
     useEffect(() => {
         if (price && quantity) {
-            setPriceValue((price * parseInt(quantity)).toString())
+            setPriceValue((price * parseFloat(quantity)).toString())
         }
     }, [quantity, price])
 
     const getCategoryList = async () => {
         try {
             await get_category_list().then(async (res: any) => {
-                console.log("category result :", JSON.stringify(res));
                 if (res.status) {
                     const newCategoryList = res.data.map((item: any) => ({ ...item, label: item.title, value: item.id }))
                     setCategoryList(newCategoryList)
@@ -61,7 +59,6 @@ const AddProduct = (props: any) => {
     const getProductList = async (categoryId: number) => {
         try {
             await get_product_list(categoryId).then(async (res: any) => {
-                console.log("product result :", JSON.stringify(res));
                 if (res.status) {
                     const newProductList = res.data.map((item: any) => ({ ...item, label: item.title, value: item.id }))
                     setProductList(newProductList)
@@ -73,48 +70,8 @@ const AddProduct = (props: any) => {
     }
 
 
-    const pickFromCamera = () => {
-        launchCamera(
-            { mediaType: "photo", quality: 1 },
-            (response: any) => {
-                if (!response.didCancel && !response.errorCode) {
-                    setImage(response.assets[0].uri);
-                }
-            }
-        );
-    };
-
-    const pickFromGallery = () => {
-        launchImageLibrary(
-            { mediaType: "photo", quality: 1 },
-            (response: any) => {
-                if (!response.didCancel && !response.errorCode) {
-                    setImage(response.assets[0].uri);
-                }
-            }
-        );
-    };
-
     const onClickUpload = () => {
-        // Alert.alert(
-        //     "Upload Image",
-        //     "Choose an option",
-        //     [
-        //         {
-        //             text: "Camera",
-        //             onPress: () => pickFromCamera(),
-        //         },
-        //         {
-        //             text: "Gallery",
-        //             onPress: () => pickFromGallery(),
-        //         },
-        //         {
-        //             text: "Cancel",
-        //             style: "cancel",
-        //         },
-        //     ]
-        // );
-
+       
         Alert.alert(
             "Upload Image",
             "Choose an option",
@@ -133,7 +90,8 @@ const AddProduct = (props: any) => {
             height: 400,
             cropping: true,
         }).then((image: any) => {
-            setImage(image.path);
+            console.log("Image path using camera : ",image);
+            setImage(image);
         });
     };
 
@@ -143,29 +101,15 @@ const AddProduct = (props: any) => {
             height: 400,
             cropping: true,
         }).then((image: any) => {
-            console.log(image.path);
-            setImage(image.path);
+            console.log("Image path using gallery : ",image);
+            setImage(image);
         });
     };
-
-
-    // const onClickUpload = () => {
-    //     launchImageLibrary({ mediaType: 'photo', quality: 1 }, (response: any) => {
-    //         if (response.didCancel) {
-    //             console.log('User cancelled image picker');
-    //         } else if (response.errorCode) {
-    //             console.log('Error: ', response.errorCode);
-    //         } else {
-    //             console.log('Selected image:', response.assets[0].uri);
-    //             setImage(response.assets[0].uri)
-    //         }
-    //     });
-    // };
 
     const onUpload = async () => {
         setLoader(true)
         const formData = new FormData();
-        formData.append("emp_id", user.id);
+        formData.append("emp_id", LoginUser.id);
         formData.append("category_id", category);
         formData.append("product_id", product);
         formData.append("quantity", quantity);
@@ -173,9 +117,9 @@ const AddProduct = (props: any) => {
         formData.append("total", priceValue);
         formData.append("location", location);
         formData.append("image", {
-            uri: image,
-            name: "product.jpg",
-            type: "image/jpeg"
+            uri: image?.path,
+            name: image?.filename,
+            type: image?.mime
         });
 
         try {
@@ -199,6 +143,7 @@ const AddProduct = (props: any) => {
             <ScrollView
                 style={{ flex: 1, backgroundColor: colors.beige }}
                 contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
+                keyboardShouldPersistTaps="handled"
             >
                 {/* PICK IMAGE */}
                 <Text style={styles.label}>Pick Image</Text>
@@ -207,7 +152,7 @@ const AddProduct = (props: any) => {
                     {
                         image
                             ?
-                            <Image source={{ uri: image }} style={{ width: '100%', height: '100%', borderRadius: 20 }} />
+                            <Image source={{ uri: image.path }} style={{ width: '100%', height: '100%', borderRadius: 20 }} />
                             :
                             <View style={styles.circle}>
                                 <Text style={styles.plus}>+</Text>

@@ -31,7 +31,7 @@ const LoginScreen = (props: any) => {
                 console.log("login result :", JSON.stringify(res));
                 if (res.status) {
                     setLoader(false)
-                    props.navigation.replace("Dashboard");
+                    props.navigation.replace("Dashboard", { LoginUser: res.user });
                     await Utils.storeData("logged_user", JSON.stringify(res.user))
                     await Utils.storeData("token", res.token)
                 } else {

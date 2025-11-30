@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Animated,
     View,
@@ -20,6 +20,8 @@ const CustomDrawer = (props: any) => {
     const { DRAWER_WIDTH, translateX, closeDrawer, user } = props
     const navigation = useNavigation()
     const [loader, setLoader] = useState(false)
+
+    const [loginUser, setLoginUser] = useState(user)
 
     const onLogout = async () => {
         setLoader(true)
@@ -45,7 +47,14 @@ const CustomDrawer = (props: any) => {
         }
     }
 
+    useEffect(() => { 
+        getUser()
+    }, [])
 
+    const getUser = async()=>{
+         const user = await Utils.getData("logged_user");
+         setLoginUser(JSON.parse(user))
+    }
 
     return (
         <Animated.View
@@ -67,11 +76,11 @@ const CustomDrawer = (props: any) => {
             {/* Profile */}
             <View style={{ alignItems: "center", marginBottom: 10 }}>
                 <Image
-                    source={{ uri: `${StageURL.url}images/employee/${user?.image}` }}
+                    source={{ uri: `${StageURL.url}images/employee/${loginUser?.image}` }}
                     style={{ width: 100, height: 100, borderRadius: 50 }}
                 />
 
-                <Text style={{ fontSize: 18, fontWeight: "600" }}>{user?.name}</Text>
+                <Text style={{ fontSize: 18, fontWeight: "600" }}>{loginUser?.name}</Text>
 
                 <View
                     style={{
@@ -88,28 +97,28 @@ const CustomDrawer = (props: any) => {
                     <Text style={styles.title}>
                         Email
                     </Text>
-                    <Text style={styles.value}>{user.email}</Text>
+                    <Text style={styles.value}>{loginUser?.email}</Text>
                 </View>
 
                 <View>
                     <Text style={styles.title}>
                         Mobile
                     </Text>
-                    <Text style={styles.value}>{user.number}</Text>
+                    <Text style={styles.value}>{loginUser?.number}</Text>
                 </View>
 
                 <View>
                     <Text style={styles.title}>
                         Aadhaar
                     </Text>
-                    <Text style={styles.value}>{user.aadhar}</Text>
+                    <Text style={styles.value}>{loginUser?.aadhar}</Text>
                 </View>
 
                 <View>
                     <Text style={styles.title}>
                         Address
                     </Text>
-                    <Text style={styles.value}>{user.address}</Text>
+                    <Text style={styles.value}>{loginUser?.address}</Text>
                 </View>
             </View>
 

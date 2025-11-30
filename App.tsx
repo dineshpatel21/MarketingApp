@@ -2,6 +2,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import Navigation from './src/navigation/Navigation'
 import { useEffect, useState } from 'react'
 import { Utils } from './Utils'
+import { KeyboardAvoidingView, Platform } from 'react-native'
 
 const App = () => {
   const [loggeIn, setLoggedIn] = useState(null)
@@ -15,7 +16,13 @@ const App = () => {
   }
 
   return <SafeAreaProvider>
-    <Navigation loggeIn={loggeIn} />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <Navigation loggeIn={loggeIn} />
+    </KeyboardAvoidingView>
+
   </SafeAreaProvider>
 }
 

@@ -17,20 +17,32 @@ import { get_checkin_checkout, get_recent_sales, get_total_orders } from "../ser
 const Dashboard = (props: any) => {
     const { openDrawer, user } = props;
 
+    const loggeduser = user ? user : props.route.params?.LoginUser
+
     const [sales, setSales] = useState()
     const [checkIn, setCheckIn] = useState()
     const [checkOut, setCheckOut] = useState()
     const [orders, setOrders] = useState()
     const [salesList, setSalesList] = useState([])
     const [loader, setLoader] = useState(false)
-    const userId = user?.id
+    const [refreshing, setRefreshing] = useState(false);
+
+    const userId = loggeduser?.id
 
 
     useEffect(() => {
-        getRecentList()
         getCheckTime()
         getTotalOrders()
+        getRecentList()
     }, [])
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        getCheckTime()
+        getTotalOrders()
+        getRecentList()
+        setRefreshing(false);
+    };
 
     const getRecentList = async () => {
         setLoader(true)
@@ -77,7 +89,7 @@ const Dashboard = (props: any) => {
     }
 
     const onAddProduct = () => {
-        props.navigation.navigate("AddProduct",{getRecentList : getRecentList});
+        props.navigation.navigate("AddProduct", { getRecentList: getRecentList, LoginUser: loggeduser });
     };
 
     return (
@@ -87,7 +99,7 @@ const Dashboard = (props: any) => {
                     <ActivityIndicator size={"large"} color={colors.primary} />
                 </View> : <View style={styles.container}>
 
-                    <Header openDrawer={openDrawer} ScreenName={"Dashboard"} user={user} />
+                    <Header openDrawer={openDrawer} ScreenName={"Dashboard"} user={loggeduser} />
 
                     {/* TOP CARDS */}
                     <View style={styles.grid}>
@@ -98,7 +110,7 @@ const Dashboard = (props: any) => {
 
                         <View style={styles.card}>
                             <Text style={styles.cardTitle}>Check Out</Text>
-                            <Text style={styles.cardValue}>{checkOut}</Text>
+                            <Text style={[styles.cardValue,{textAlign:'center'}]}>{checkOut ?? "-"}</Text>
                         </View>
 
                         <View style={styles.card}>
@@ -122,7 +134,9 @@ const Dashboard = (props: any) => {
                         data={salesList}
                         keyExtractor={(item: any, index: number) => index + "recentlist"}
                         renderItem={({ item }) => <RecentSales item={item} />}
-                        showsVerticalScrollIndicator={false}
+                        showsVerticalScrollIndicator={true}
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
                     />
 
 

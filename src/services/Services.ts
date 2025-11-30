@@ -28,8 +28,6 @@ export const logout = async () => {
 
     return new Promise(async (resolve, reject) => {
         const token = await Utils.getData("token")
-        console.log("Token : ", token);
-
         try {
             let fetchParameter = {
                 method: Method.POST,
@@ -72,12 +70,14 @@ export const Dashboard = async (body: any) => {
 
 
 export const Add_Product = async (body: any) => {
+    console.log("<======== PRODUCT ADD  =========> : ",body);
+    
     
     return new Promise(async (resolve, reject) => {
         try {
             let fetchParameter = {
                 method: Method.POST,
-                body: JSON.stringify(body),
+                body: body,
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
