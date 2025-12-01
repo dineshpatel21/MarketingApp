@@ -43,7 +43,6 @@ export const Utils = {
             await AsyncStorage.clear();
             return true;
         } catch (e) {
-            console.log(e);
             // error reading value
         }
     },

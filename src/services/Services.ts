@@ -2,7 +2,6 @@ import { Method, StageURL } from "../../key";
 import { Utils } from "../../Utils";
 
 export const login = async (body: any) => {
-    console.log("Login body : ", body);
 
     return new Promise(async (resolve, reject) => {
         try {
@@ -47,7 +46,6 @@ export const logout = async () => {
 }
 
 export const Dashboard = async (body: any) => {
-    console.log("Dashboard body : ", body);
 
     return new Promise(async (resolve, reject) => {
         try {
@@ -70,7 +68,6 @@ export const Dashboard = async (body: any) => {
 
 
 export const Add_Product = async (body: any) => {
-    console.log("<======== PRODUCT ADD  =========> : ",body);
     
     
     return new Promise(async (resolve, reject) => {

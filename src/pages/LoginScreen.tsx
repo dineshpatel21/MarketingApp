@@ -28,7 +28,6 @@ const LoginScreen = (props: any) => {
 
         try {
             await login(body).then(async (res: any) => {
-                console.log("login result :", JSON.stringify(res));
                 if (res.status) {
                     setLoader(false)
                     props.navigation.replace("Dashboard", { LoginUser: res.user });

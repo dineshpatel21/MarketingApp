@@ -71,7 +71,7 @@ const AddProduct = (props: any) => {
 
 
     const onClickUpload = () => {
-       
+
         Alert.alert(
             "Upload Image",
             "Choose an option",
@@ -90,7 +90,6 @@ const AddProduct = (props: any) => {
             height: 400,
             cropping: true,
         }).then((image: any) => {
-            console.log("Image path using camera : ",image);
             setImage(image);
         });
     };
@@ -101,7 +100,6 @@ const AddProduct = (props: any) => {
             height: 400,
             cropping: true,
         }).then((image: any) => {
-            console.log("Image path using gallery : ",image);
             setImage(image);
         });
     };
@@ -124,7 +122,6 @@ const AddProduct = (props: any) => {
 
         try {
             await Add_Product(formData).then((res: any) => {
-                console.log("ADDING PRODUCTS: ", JSON.stringify(res));
                 if (res.status) {
                     props.navigation.goBack()
                     getRecentList()
@@ -160,26 +157,7 @@ const AddProduct = (props: any) => {
                     }
                 </TouchableOpacity>
 
-                {/* TITLE */}
-                {/* <Text style={styles.label}>Title</Text>
-                <TextInput
-                    value={title}
-                    onChangeText={(text: any) => setTitle(text)}
-                    placeholder="Enter title"
-                    placeholderTextColor={colors.textLight}
-                    style={styles.input}
-                /> */}
-
-                {/* QUANTITY */}
-                <Text style={styles.label}>Quantity</Text>
-                <TextInput
-                    value={quantity}
-                    keyboardType="number-pad"
-                    onChangeText={(text: any) => setQuantity(text)}
-                    placeholder="Enter quantity"
-                    placeholderTextColor={colors.textLight}
-                    style={styles.input} />
-
+                {/* CATEGORY */}
                 <Text style={styles.label}>Select Category</Text>
                 <Dropdown
                     style={styles.input}
@@ -197,7 +175,6 @@ const AddProduct = (props: any) => {
                 />
 
                 {/* PRODUCT */}
-
                 <Text style={styles.label}>Select Product</Text>
                 <Dropdown
                     style={styles.input}
@@ -214,14 +191,33 @@ const AddProduct = (props: any) => {
                     }}
                 />
 
-                {/* PRODUCT */}
 
                 {/* PRICE */}
                 <Text style={styles.label}>Price</Text>
                 <TextInput
+                    value={price}
+                    editable={false}
+                    placeholder="price"
+                    placeholderTextColor={colors.textLight}
+                    style={styles.input}
+                />
+
+                {/* QUANTITY */}
+                <Text style={styles.label}>Quantity</Text>
+                <TextInput
+                    value={quantity}
+                    keyboardType="number-pad"
+                    onChangeText={(text: any) => setQuantity(text)}
+                    placeholder="Enter quantity"
+                    placeholderTextColor={colors.textLight}
+                    style={styles.input} />
+
+                {/* PRICE */}
+                <Text style={styles.label}>Total Price</Text>
+                <TextInput
                     value={priceValue}
                     editable={false}
-                    placeholder="Enter price"
+                    placeholder="Total price"
                     placeholderTextColor={colors.textLight}
                     style={styles.input}
                 />

@@ -48,7 +48,6 @@ const Dashboard = (props: any) => {
         setLoader(true)
         try {
             await get_recent_sales().then(async (res: any) => {
-                console.log("recent sales result :", JSON.stringify(res));
                 if (res.status) {
                     setSalesList(res.data)
                 }
@@ -63,7 +62,6 @@ const Dashboard = (props: any) => {
     const getCheckTime = async () => {
         try {
             await get_checkin_checkout(userId).then(async (res: any) => {
-                console.log("Check in out result :", JSON.stringify(res));
                 if (res.status) {
                     setCheckIn(res.data.login_time)
                     setCheckOut(res.data.logout_time)
@@ -77,7 +75,6 @@ const Dashboard = (props: any) => {
     const getTotalOrders = async () => {
         try {
             await get_total_orders(userId).then(async (res: any) => {
-                console.log("Total result :", JSON.stringify(res));
                 if (res.status) {
                     setSales(res.total_amount)
                     setOrders(res.total_orders)
