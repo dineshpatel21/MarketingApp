@@ -47,13 +47,13 @@ const CustomDrawer = (props: any) => {
         }
     }
 
-    useEffect(() => { 
+    useEffect(() => {
         getUser()
     }, [])
 
-    const getUser = async()=>{
-         const user = await Utils.getData("logged_user");
-         setLoginUser(JSON.parse(user))
+    const getUser = async () => {
+        const user = await Utils.getData("logged_user");
+        setLoginUser(JSON.parse(user))
     }
 
     return (
@@ -76,7 +76,7 @@ const CustomDrawer = (props: any) => {
             {/* Profile */}
             <View style={{ alignItems: "center", marginBottom: 10 }}>
                 <Image
-                    source={{ uri: `${StageURL.url}images/employee/${loginUser?.image}` }}
+                    source={{ uri: `${StageURL.url}public/images/employee/${loginUser?.image}` }}
                     style={{ width: 100, height: 100, borderRadius: 50 }}
                 />
 
@@ -121,6 +121,41 @@ const CustomDrawer = (props: any) => {
                     <Text style={styles.value}>{loginUser?.address}</Text>
                 </View>
             </View>
+
+            {/* Customer Support */}
+            <View
+                style={{
+                    position: "absolute",
+                    bottom: 90,
+                    left: 20,
+                    right: 20,
+                    backgroundColor: "#fff",
+                    padding: 12,
+                    borderRadius: 10,
+                    // elevation: 3,
+                    borderWidth: 0.5,
+                    borderColor: "#ddd"
+                }}
+            >
+                <Text style={{ fontSize: 16, fontWeight: "700", color: colors.textDark, marginBottom: 6 }}>
+                    Support
+                </Text>
+
+                <View >
+                    <Text style={styles.title}>Mobile: </Text>
+                    <Text style={styles.value}>
+                        +91 - 1234567890
+                    </Text>
+                </View>
+                <View >
+                    <Text style={styles.title}>Email: </Text>
+                    <Text style={styles.value}>
+                        dinesh.patel36936@gmail.com
+                    </Text>
+                </View>
+
+            </View>
+
 
             {/* Logout */}
             <View

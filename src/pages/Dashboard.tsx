@@ -31,25 +31,29 @@ const Dashboard = (props: any) => {
 
 
     useEffect(() => {
+        callDashboard()
+    }, [])
+
+    const callDashboard = () => {
         getCheckTime()
         getTotalOrders()
         getRecentList()
-    }, [])
+    }
 
     const onRefresh = async () => {
         setRefreshing(true);
-        getCheckTime()
-        getTotalOrders()
-        getRecentList()
+        callDashboard()
         setRefreshing(false);
     };
 
     const getRecentList = async () => {
         setLoader(true)
         try {
-            await get_recent_sales().then(async (res: any) => {
+            await get_recent_sales(userId).then(async (res: any) => {
+                console.log("Result Sales : ", JSON.stringify(res));
+
                 if (res.status) {
-                    setSalesList(res.data)
+                    setSalesList(res.orders)
                 }
             })
         } catch (error) {
@@ -86,7 +90,7 @@ const Dashboard = (props: any) => {
     }
 
     const onAddProduct = () => {
-        props.navigation.navigate("AddProduct", { getRecentList: getRecentList, LoginUser: loggeduser });
+        props.navigation.navigate("AddProduct", { getRecentList: callDashboard, LoginUser: loggeduser });
     };
 
     return (
@@ -107,7 +111,7 @@ const Dashboard = (props: any) => {
 
                         <View style={styles.card}>
                             <Text style={styles.cardTitle}>Check Out</Text>
-                            <Text style={[styles.cardValue,{textAlign:'center'}]}>{checkOut ?? "-"}</Text>
+                            <Text style={[styles.cardValue, { textAlign: 'center' }]}>{checkOut ?? "-"}</Text>
                         </View>
 
                         <View style={styles.card}>

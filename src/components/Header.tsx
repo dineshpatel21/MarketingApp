@@ -19,7 +19,8 @@ const Header = (props: any) => {
             <View style={styles.profileContainer}>
                 <Text style={styles.userName}>{user?.name}</Text>
                 <TouchableOpacity style={styles.profileCircle}>
-                    <Image source={{ uri: `${StageURL.url}images/employee/${user?.image}` }} style={{ width: '100%', height: '100%', borderRadius: 20 }} />
+                    {/* <Image source={{ uri: `${StageURL.url}public/images/employee/${user?.image}` }} style={{ width: '100%', height: '100%', borderRadius: 20 }} /> */}
+                    <Image source={require("../assets/logo.png")} style={{ width: '100%', height: '100%', borderRadius: 20 }} />
                 </TouchableOpacity>
             </View>
         </View>

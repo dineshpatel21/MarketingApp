@@ -132,7 +132,7 @@ export const get_product_list = async (category_id: number) => {
     })
 }
 
-export const get_recent_sales = async () => {
+export const get_recent_sales = async (userId: number) => {
 
     return new Promise(async (resolve, reject) => {
         try {
@@ -143,7 +143,7 @@ export const get_recent_sales = async () => {
                     'Content-Type': 'application/json',
                 },
             }
-            let serverResponse = await fetch(StageURL.url + `api/store/view`, fetchParameter);
+            let serverResponse = await fetch(StageURL.url + `api/dashboard/recent-sales/${userId}`, fetchParameter);
             let response = await serverResponse.json();
             resolve(response);
         }

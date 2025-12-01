@@ -15,7 +15,7 @@ const RecentSales = ({ item }: any) => {
             <View style={styles.saleDetails}>
                 <Text style={styles.productName}>{item.pro_name} {`( ${item.cat_name} )`}</Text>
                 <Text style={styles.productAddress}>{item.location}</Text>
-                <Text style={styles.productWeight}>{item.total}</Text>
+                <Text style={styles.productWeight}>₹ {item.total}</Text>
             </View>
         </View>
     )
