@@ -93,6 +93,15 @@ const Dashboard = (props: any) => {
         props.navigation.navigate("AddProduct", { getRecentList: callDashboard, LoginUser: loggeduser });
     };
 
+
+    const leaveAction = () => {
+        props.navigation.navigate("LeaveForm")
+    }
+
+    const leaveListAction = () => {
+        props.navigation.navigate("LeaveList")
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             {
@@ -125,6 +134,16 @@ const Dashboard = (props: any) => {
                             <Text style={styles.cardValue}>₹ {sales}</Text>
                         </View>
                     </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                        <TouchableOpacity style={styles.button} onPress={leaveAction}>
+                            <Text style={styles.buttonText}>Apply for Leave</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button2} onPress={leaveListAction}>
+                            <Text style={styles.buttonText2}>View Leave List</Text>
+                        </TouchableOpacity>
+                    </View>
+
 
                     <View style={{ backgroundColor: colors.beige, marginVertical: 10 }}>
                         <Text style={styles.sectionTitle}>Recent Sales</Text>
@@ -164,6 +183,20 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
 
+    button: {
+        backgroundColor: colors.primary,
+        padding: 10,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center'
+        // marginBottom: 16,
+    },
+    buttonText: {
+        color: "#FFF",
+        textAlign: "center",
+        fontSize: 18,
+        fontWeight: "600",
+    },
     card: {
         width: "48%",
         backgroundColor: "#FFF",
@@ -181,9 +214,26 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
 
+    button2: {
+        backgroundColor: "#FFF",
+        borderWidth: 1.5,
+        borderColor: colors.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 15,
+        borderRadius: 12,
+    },
+
     cardValue: {
         fontSize: 20,
         fontWeight: "700",
+        color: colors.textDark,
+    },
+
+    title: {
+        fontSize: 22,
+        fontWeight: "700",
+        marginBottom: 20,
         color: colors.textDark,
     },
 
@@ -193,6 +243,12 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
 
+    buttonText2: {
+        color: colors.primary,
+        textAlign: "center",
+        fontSize: 18,
+        fontWeight: "600",
+    },
     sectionTitle: {
         fontSize: 20,
         fontWeight: "700",

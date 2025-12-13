@@ -89,6 +89,27 @@ export const Add_Product = async (body: any) => {
     })
 }
 
+export const sumbit_leave = async (body: any) => {
+    
+    return new Promise(async (resolve, reject) => {
+        try {
+            let fetchParameter = {
+                method: Method.POST,
+                body: body,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
+            let serverResponse = await fetch(StageURL.url + 'api/leave/insert', fetchParameter);
+            let response = await serverResponse.json();
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    })
+}
+
 export const get_category_list = async () => {
 
     return new Promise(async (resolve, reject) => {
@@ -166,6 +187,27 @@ export const get_checkin_checkout = async (userId: number) => {
                 },
             }
             let serverResponse = await fetch(StageURL.url + `api/dashboard/checkin/${userId}`, fetchParameter);
+            let response = await serverResponse.json();
+            resolve(response);
+        }
+        catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export const get_leave_list_data = async (userId?: number) => {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            let fetchParameter = {
+                method: Method.GET,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            }
+            let serverResponse = await fetch(StageURL.url + `api/leave/get-by-id/${userId}`, fetchParameter);
             let response = await serverResponse.json();
             resolve(response);
         }

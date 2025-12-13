@@ -32,6 +32,7 @@ const AddProduct = (props: any) => {
     const [priceValue, setPriceValue] = useState<any>()
     const [location, setLocation] = useState<any>()
     const [loader, setLoader] = useState(false)
+    const [companyName, setCompanyName] = useState()
 
     useEffect(() => {
         getCategoryList()
@@ -114,6 +115,7 @@ const AddProduct = (props: any) => {
         formData.append("price", price);
         formData.append("total", priceValue);
         formData.append("location", location);
+        formData.append("company", companyName);
         formData.append("image", {
             uri: image?.path,
             name: image?.filename,
@@ -156,6 +158,16 @@ const AddProduct = (props: any) => {
                             </View>
                     }
                 </TouchableOpacity>
+
+                {/* company name */}
+                <Text style={styles.label}>Company name</Text>
+                <TextInput
+                    value={companyName}
+                    placeholder="Company name"
+                    onChangeText={(text: any) => setCompanyName(text)}
+                    placeholderTextColor={colors.textLight}
+                    style={styles.input}
+                />
 
                 {/* CATEGORY */}
                 <Text style={styles.label}>Select Category</Text>

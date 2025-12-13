@@ -186,6 +186,35 @@ const CustomDrawer = (props: any) => {
 
 const styles = StyleSheet.create({
     title: { fontSize: 15, fontWeight: "600", color: colors.textLight },
-    value: { fontSize: 14, fontWeight: '400', color: colors.textDark }
+    value: { fontSize: 14, fontWeight: '400', color: colors.textDark },
+    container: {
+        padding: 18,
+        flex: 1,
+    },
+    button: {
+        backgroundColor: colors.primary,
+        padding: 10,
+        borderRadius: 12,
+        marginBottom: 16,
+    },
+    buttonText: {
+        color: "#FFF",
+        textAlign: "center",
+        fontSize: 18,
+        fontWeight: "600",
+    },
+    button2: {
+        backgroundColor: "#FFF",
+        borderWidth: 1.5,
+        borderColor: colors.primary,
+        padding: 10,
+        borderRadius: 12,
+    },
+    buttonText2: {
+        color: colors.primary,
+        textAlign: "center",
+        fontSize: 18,
+        fontWeight: "600",
+    }
 })
 export default CustomDrawer;

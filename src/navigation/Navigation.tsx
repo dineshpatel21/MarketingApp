@@ -9,6 +9,9 @@ import LoginScreen from "../pages/LoginScreen";
 import CustomDrawer from "./CustomDrawer";
 import { navigationRef } from "./NavigationService";
 import { Utils } from "../../Utils";
+import LeaveForm from "../pages/LeaveForm";
+import LeaveList from "../pages/LeaveList";
+import LeaveOverview from "../pages/LeaveOverview";
 
 
 const Stack = createNativeStackNavigator()
@@ -80,6 +83,7 @@ const Navigation = (props: any) => {
                                     DRAWER_WIDTH={DRAWER_WIDTH}
                                     closeDrawer={closeDrawer}
                                     user={user}
+                                    navigationRef={navigationRef}
                                 />
                             </View>
                         </TouchableWithoutFeedback>
@@ -94,6 +98,15 @@ const Navigation = (props: any) => {
                 <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="AddProduct" options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Store' }}>
                     {props => <AddProduct {...props} user={user}/>}
+                </Stack.Screen>
+                <Stack.Screen name="LeaveForm" options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Apply for leave' }}>
+                    {props => <LeaveForm {...props} user={user}/>}
+                </Stack.Screen>
+                <Stack.Screen name="LeaveOverview" options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Leave Overview' }}>
+                    {props => <LeaveOverview {...props} user={user}/>}
+                </Stack.Screen>
+                <Stack.Screen name="LeaveList" options={{ headerShown: true, headerTitleAlign: "center", headerTitle: 'Leaves' }}>
+                    {props => <LeaveList {...props} user={user}/>}
                 </Stack.Screen>
 
             </Stack.Navigator>
